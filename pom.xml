@@ -7,7 +7,7 @@
     <groupId>io.confluent</groupId>
     <artifactId>rest-utils-parent</artifactId>
     <packaging>pom</packaging>
-    <version>2.0-SNAPSHOT</version>
+    <version>1.0.1</version>
     <name>rest-utils-parent</name>
     <organization>
         <name>Confluent, Inc.</name>
@@ -42,13 +42,21 @@
     </modules>
 
     <properties>
-        <confluent.common.version>2.0-SNAPSHOT</confluent.common.version>
-        <jersey.version>2.19</jersey.version>
-        <jetty.version>9.2.12.v20150709</jetty.version>
-        <jackson.version>2.5.4</jackson.version>
-        <junit.version>4.12</junit.version>
+        <confluent.common.version>1.0.1</confluent.common.version>
+        <jersey.version>2.6</jersey.version>
+        <jetty.version>8.1.16.v20140903</jetty.version>
+        <jackson.version>2.4.3</jackson.version>
+        <junit.version>4.11</junit.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
+
+    <repositories>
+        <repository>
+            <id>confluent</id>
+            <name>Confluent</name>
+            <url>http://packages.confluent.io/maven/</url>
+        </repository>
+    </repositories>
 
     <build>
         <plugins>

@@ -18,6 +18,16 @@ package io.confluent.rest;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.jaxrs.base.JsonParseExceptionMapper;
 
+import org.eclipse.jetty.jaas.JAASLoginService;
+import org.eclipse.jetty.jaas.spi.AbstractLoginModule;
+import org.eclipse.jetty.jaas.spi.UserInfo;
+import org.eclipse.jetty.security.ConstraintMapping;
+import org.eclipse.jetty.security.ConstraintSecurityHandler;
+import org.eclipse.jetty.security.DefaultIdentityService;
+import org.eclipse.jetty.security.HashLoginService;
+import org.eclipse.jetty.security.LoginService;
+import org.eclipse.jetty.security.SecurityHandler;
+import org.eclipse.jetty.security.authentication.BasicAuthenticator;
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
@@ -28,17 +38,22 @@ import org.eclipse.jetty.server.handler.RequestLogHandler;
 import org.eclipse.jetty.server.handler.StatisticsHandler;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
+import org.eclipse.jetty.util.security.Constraint;
+import org.eclipse.jetty.util.security.Credential;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.server.ServerProperties;
-import org.glassfish.jersey.server.validation.ValidationFeature;
+//import org.glassfish.jersey.server.validation.ValidationFeature;
 import org.glassfish.jersey.servlet.ServletContainer;
 
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Vector;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
+import javax.security.auth.login.LoginException;
 import javax.ws.rs.core.Configurable;
 
 import io.confluent.common.metrics.JmxReporter;
@@ -123,6 +138,7 @@ public abstract class Application<T extends RestConfig> {
     server.setConnectors(new Connector[]{connector});
 
     ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
+    context.setSecurityHandler(basicAuth("ldaploginmodule"));
     context.setContextPath("/");
     context.addServlet(servletHolder, "/*");
 
@@ -167,7 +183,7 @@ public abstract class Application<T extends RestConfig> {
     config.register(jsonProvider);
     config.register(JsonParseExceptionMapper.class);
 
-    config.register(ValidationFeature.class);
+    //config.register(ValidationFeature.class);
     config.register(ConstraintViolationExceptionMapper.class);
     config.register(new WebApplicationExceptionMapper(restConfig));
     config.register(new GenericExceptionMapper(restConfig));
@@ -228,5 +244,33 @@ public abstract class Application<T extends RestConfig> {
    */
   public void onShutdown() {
   }
+
+  private final SecurityHandler basicAuth(String realm) {
+
+      JAASLoginService l = new JAASLoginService();
+      l.setName("Test JAAS Realm");
+      l.setLoginModuleName("ldaploginmodule");
+      //l.setIdentityService(new DefaultIdentityService());
+      //l.setRoleClassNames(new String[]{"org.eclipse.jetty.plus.jaas.JAASRole"});
+      
+      Constraint constraint = new Constraint();
+      constraint.setName(Constraint.__BASIC_AUTH);
+      constraint.setRoles(new String[]{"onemanagers"});
+      constraint.setAuthenticate(true);
+       
+      ConstraintMapping cm = new ConstraintMapping();
+      cm.setConstraint(constraint);
+      cm.setPathSpec("/*");
+      
+      ConstraintSecurityHandler csh = new ConstraintSecurityHandler();
+      csh.setAuthenticator(new BasicAuthenticator());
+      csh.addConstraintMapping(cm);
+      csh.setLoginService(l);
+      csh.setRealmName("realm");
+      
+      return csh;
+    
+  }
+  
 }
 
