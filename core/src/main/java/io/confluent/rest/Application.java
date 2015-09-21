@@ -240,13 +240,13 @@ public abstract class Application<T extends RestConfig> {
 
       JAASLoginService l = new JAASLoginService();
       l.setName("Test JAAS Realm");
-      l.setLoginModuleName("ldaploginmodule");
+      l.setLoginModuleName(config.JAAS_LOGIN_MODULE);
       //l.setIdentityService(new DefaultIdentityService());
       //l.setRoleClassNames(new String[]{"org.eclipse.jetty.plus.jaas.JAASRole"});
       
       Constraint constraint = new Constraint();
       constraint.setName(Constraint.__BASIC_AUTH);
-      constraint.setRoles(new String[]{"onemanagers"});
+      constraint.setRoles(config.AUTHORIZED_ROLES.split(";"));
       constraint.setAuthenticate(true);
        
       ConstraintMapping cm = new ConstraintMapping();

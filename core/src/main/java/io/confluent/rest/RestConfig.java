@@ -83,6 +83,16 @@ public class RestConfig extends AbstractConfig {
       "of new metric creation. The JmxReporter is always included to register JMX statistics.";
   protected static final String METRICS_REPORTER_CLASSES_DEFAULT = "";
 
+  public static final String JAAS_LOGIN_MODULE = "jaas.login.module";
+  protected static final String JAAS_LOGIN_MODULE_DOC =
+      "Module id defined on jaas config file.";
+  protected static final String JAAS_LOGIN_MODULE_DEFAULT = "ldaploginmodule";
+
+  public static final String AUTHORIZED_ROLES = "authorized.roles";
+  protected static final String AUTHORIZED_ROLES_DOC =
+      "The roles wich can access the api.";
+  protected static final String AUTHORIZED_ROLES_DEFAULT = "onemanagers;users";
+
   public static ConfigDef baseConfigDef() {
     return new ConfigDef()
         .define(DEBUG_CONFIG, Type.BOOLEAN,
@@ -113,7 +123,13 @@ public class RestConfig extends AbstractConfig {
                 METRICS_SAMPLE_WINDOW_MS_DOC)
         .define(METRICS_NUM_SAMPLES_CONFIG, Type.INT,
                 METRICS_NUM_SAMPLES_DEFAULT, ConfigDef.Range.atLeast(1),
-                Importance.LOW, METRICS_NUM_SAMPLES_DOC);
+                Importance.LOW, METRICS_NUM_SAMPLES_DOC)
+        .define(JAAS_LOGIN_MODULE, Type.STRING,
+                JAAS_LOGIN_MODULE_DEFAULT, ConfigDef.Range.atLeast(1),
+                Importance.LOW, JAAS_LOGIN_MODULE_DOC)
+        .define(AUTHORIZED_ROLES, Type.STRING,
+                        AUTHORIZED_ROLES_DEFAULT, ConfigDef.Range.atLeast(1),
+                        Importance.LOW, AUTHORIZED_ROLES_DOC);
   }
 
   private static Time defaultTime = new SystemTime();
