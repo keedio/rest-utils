@@ -125,10 +125,10 @@ public class RestConfig extends AbstractConfig {
                 METRICS_NUM_SAMPLES_DEFAULT, ConfigDef.Range.atLeast(1),
                 Importance.LOW, METRICS_NUM_SAMPLES_DOC)
         .define(JAAS_LOGIN_MODULE, Type.STRING,
-                JAAS_LOGIN_MODULE_DEFAULT, ConfigDef.Range.atLeast(1),
+                JAAS_LOGIN_MODULE_DEFAULT,
                 Importance.LOW, JAAS_LOGIN_MODULE_DOC)
         .define(AUTHORIZED_ROLES, Type.STRING,
-                        AUTHORIZED_ROLES_DEFAULT, ConfigDef.Range.atLeast(1),
+                        AUTHORIZED_ROLES_DEFAULT, 
                         Importance.LOW, AUTHORIZED_ROLES_DOC);
   }
 
